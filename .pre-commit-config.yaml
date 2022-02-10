@@ -1,12 +1,12 @@
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v3.3.0
+    rev: v4.1.0
     hooks:
       # - id: end-of-file-fixer
       - id: check-yaml
       - id: check-added-large-files
         args: ['--maxkb=250']
-      - id: requirements-txt-fixer
+      # - id: requirements-txt-fixer
       - id: double-quote-string-fixer
       - id: detect-private-key
       - id: check-merge-conflict
