@@ -5,4 +5,3 @@ See the [Waterhypernet website](https://waterhypernet.org/equipment/) for inform
 
 
 Version numbers according to [Semantic Versioning 2.0.0](https://semver.org/).
-
