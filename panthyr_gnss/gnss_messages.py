@@ -1,7 +1,37 @@
 # -*- coding: utf-8 -*-
-class GGAMessage:
 
-    def __init__(self):
+
+class NMEAMessage:
+
+    def __init__(self, raw_message: str):
+        self.raw_msg = raw_message
+
+    def _check_crc(self) -> bool:
+        """NMEA string checksum.
+
+        Last two characters of a NMEA string are a CRC check.
+        XOR each character (binary ASCII representation) between $ and *.
+        Convert to base 16 to get the CRC.
+
+        Returns:
+            bool: True if checksum is correct, False if not.
+        """
+        stripped_message: str = self.raw_msg[
+            1:-3]  # only use part between '$' and '*CRC'
+
+        crc: int = 0  # start value for CRC
+
+        for character in stripped_message:
+            crc ^= ord(
+                character
+            )  # xor each character with the previous CRC solution
+        crc_result: str = str(hex(crc)[2:])
+        return crc_result == self.raw_msg[-2:].lower()
+
+
+class GGAMessage(NMEAMessage):
+
+    def __init__(self, raw_message: str):
         """Example GGA string: $GPGGA,133933.000,5114.16147,N,00255.70634,E,1,09,1.0,011.91,M,47.1,M,,*66
         GGA message fields (comma separated):
         Field 	Meaning
@@ -28,12 +58,12 @@ class GGAMessage:
                 Null field when any ref. station ID is selected and no corrections are received.
         15  The checksum data
         """
-        pass
+        super().__init__(raw_message)
 
 
-class RMCMessage:
+class RMCMessage(NMEAMessage):
 
-    def __init__(self):
+    def __init__(self, raw_message: str):
         """Example RMC (Recommended minimum) string:
         $GPRMC,204804.000,V,4520.254,N,07554.206,W,0.0,0.0,200608,0.0,W*7E
 
@@ -55,4 +85,7 @@ class RMCMessage:
                 configuration. Code should work with either.
         12/13  Checksum
         """
-        pass
+        super().__init__(raw_message)
+
+    def process(self) -> bool:
+        return True
