@@ -4,8 +4,9 @@ import logging
 from time import sleep
 
 import serial  # type: ignore
-from gnss_messages import GGAMessage
-from gnss_messages import RMCMessage
+
+from .gnss_messages import GGAMessage
+from .gnss_messages import RMCMessage
 
 GPS_BAUDRATE: int = 9600
 GPS_SERIALPORT: str = '/dev/ttyO4'
