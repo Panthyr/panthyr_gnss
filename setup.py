@@ -8,6 +8,6 @@ setup(
     packages=find_packages(exclude='old'),
     entry_points={
         'console_scripts':
-        ['test_gnss = test_gnss.test_gnss'],
+        ['test_gnss = panthyr_gnss.test_gnss:test_gnss'],
     },
 )
