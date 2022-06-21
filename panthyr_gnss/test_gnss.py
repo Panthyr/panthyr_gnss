@@ -30,7 +30,7 @@ WELCOME_MSG = (
 def test_gnss():
     counter: int = 1
     print(WELCOME_MSG)
-    gpio = pGPIO()
+    gpio = pGPIO(GPIO_PIN[0], GPIO_PIN[1])
     gpio.on()
     try:
         while True:
