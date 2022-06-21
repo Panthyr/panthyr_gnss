@@ -130,22 +130,25 @@ def get_nmea(port: str = GPS_PORT, timeout=45):
                 uart_buffer_str = ''  # Clear the buffer to receive a new line
 
                 print(f'full string: {full_string}')
-                if full_string[
-                    :
-                    7
-                ] == '$GPGGA,' and __check_checksum(
-                                   full_string,
+                if full_string.startswith(
+                        '$G',
+                ) and full_string[
+                        3:7
+                ] == 'GGA,' and __check_checksum(
+                            full_string,
                 ) and __check_gps_quality(
-                                   full_string, ) > 0:
+                            full_string, ) > 0:
                     valid_gga = full_string[:-3].split(
                         ',',
                     )  # store the string as a valid gga message
 
-                if full_string[
-                    :
-                    7
-                ] == '$GPRMC,' and valid_gga != '' and __check_checksum(
-                                   full_string, ):
+                if full_string.startswith(
+                        '$G',
+                ) and full_string[
+                        3:
+                        7
+                ] == 'RMC,' and valid_gga != '' and __check_checksum(
+                            full_string, ):
                     valid_rmc = full_string[:-3].split(
                         ',',
                     )  # store the string as a valid rmc message
