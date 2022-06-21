@@ -21,7 +21,7 @@ WELCOME_MSG = (
     'If the receiver does not have clear sight to the sky, don\'t expect a position fix.\r\n'
     'Getting a fix might take up to a minute, even with a clear view on the sky.\r\n'
     f'Assumes receiver is connected to port {PORT}, set to {BAUDRATE} baud and powered from  '
-    f'chip {GPIO_PIN[0]}, offset {GPIO_PIN[1]}\r\n.'
+    f'chip {GPIO_PIN[0]}, offset {GPIO_PIN[1]}.\r\n'
     f'Loop time set to {LOOP_TIME} seconds, timeout set to {NMEA_TIMEOUT} seconds.\r\n'
     'Hit CTRL+C to exit...\r\n\r\n'
 )
@@ -38,7 +38,9 @@ def test_gnss():
                 port=PORT,
             )
 
-            print(f'Loop {counter}, message: {rtn} ')
+            print(
+                f'Loop {counter}, message: {rtn or "No data received"}',
+            )
 
             counter += 1
             sleep(LOOP_TIME)

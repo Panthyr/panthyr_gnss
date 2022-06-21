@@ -114,8 +114,7 @@ def get_nmea(port: str = GPS_PORT, timeout=45):
     while timeout:
         while serport.inWaiting(
         ) > 0:  # Loop as long as there are chars in serial port buffer
-            uart_buffer_str += serport.read(
-                1,
+            uart_buffer_str += serport.read(1).decode(
             )  # Read from the buffer, one character at a time
 
             if uart_buffer_str[
@@ -131,8 +130,7 @@ def get_nmea(port: str = GPS_PORT, timeout=45):
                 ] == '$GPGGA,' and __check_checksum(
                                    full_string,
                 ) and __check_gps_quality(
-                                   full_string,
-                ) > 0:
+                                   full_string, ) > 0:
                     valid_gga = full_string[:-3].split(
                         ',',
                     )  # store the string as a valid gga message
@@ -141,21 +139,23 @@ def get_nmea(port: str = GPS_PORT, timeout=45):
                     :
                     7
                 ] == '$GPRMC,' and valid_gga != '' and __check_checksum(
-                                   full_string,
-                ):
+                                   full_string, ):
                     valid_rmc = full_string[:-3].split(
                         ',',
                     )  # store the string as a valid rmc message
 
                 if valid_gga and valid_rmc:  # we have valid gga and rmc messages so parse the data
                     dt_result = __parse_datetime(
-                        valid_gga, valid_rmc,
+                        valid_gga,
+                        valid_rmc,
                     )
                     ch_result = __parse_coordinates_height(
-                        valid_gga, valid_rmc,
+                        valid_gga,
+                        valid_rmc,
                     )
                     qu_result = __parse_qual_mag_var(
-                        valid_rmc, valid_gga,
+                        valid_rmc,
+                        valid_gga,
                     )
                     if dt_result and ch_result and qu_result:
                         return parsed
@@ -221,8 +221,7 @@ def __parse_datetime(gga_list, rmc_list):
 
     try:  # gga message contains time in format HHMMSS.ms
         index = gga_list[1].index(
-            '.',
-        )  # check the index of '.'
+            '.', )  # check the index of '.'
         timestring = (
             gga_list[1]
         )[:index]  # and use that to keep only HHMMSS
@@ -233,7 +232,8 @@ def __parse_datetime(gga_list, rmc_list):
         9
     ]  # add the date to the time
     parsed['utc'] = datetime.datetime.strptime(
-        datetimestring, '%H%M%S%d%m%y',
+        datetimestring,
+        '%H%M%S%d%m%y',
     )
 
     return True
