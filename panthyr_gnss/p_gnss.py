@@ -114,9 +114,14 @@ def get_nmea(port: str = GPS_PORT, timeout=45):
     while timeout:
         while serport.inWaiting(
         ) > 0:  # Loop as long as there are chars in serial port buffer
-            uart_buffer_str += serport.read(1).decode(
-            )  # Read from the buffer, one character at a time
-
+            read = serport.read(1)
+            try:
+                uart_buffer_str += read.decode(
+                )  # Read from the buffer, one character at a time
+            except UnicodeDecodeError:
+                log.exception(
+                    f'Could not decode incoming byte {read}',
+                )
             if uart_buffer_str[
                     -2:
             ] == '\r\n':  # If a newline is found
@@ -124,6 +129,7 @@ def get_nmea(port: str = GPS_PORT, timeout=45):
                 )  # Put message without newline chars in variable
                 uart_buffer_str = ''  # Clear the buffer to receive a new line
 
+                print(f'full string: {full_string}')
                 if full_string[
                     :
                     7
