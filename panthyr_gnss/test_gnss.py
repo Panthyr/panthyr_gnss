@@ -20,10 +20,13 @@ WELCOME_MSG = (
     'This will check for incoming data from the GNSS. '
     'If the receiver does not have clear sight to the sky, don\'t expect a position fix. \r\n'
     'Getting a fix might take up to a minute, even with a clear view on the sky.\r\n\r\n'
-    f'Assumes: \r\n- receiver is connected to port {PORT}\r\n- set to {BAUDRATE} baud\r\n- powered from  '
+    'WITHOUT THE CORRECT CONFIGURATION, THIS WON\'T WORK SO PLEASE DON\'T EXPECT ANYTHING TO HAPPEN.\r\n'
+    'IF YOU HAVEN\'T CONFIGURED THE RECEIVER USING THE TALLYSMAN SW YET, DO THAT FIRST!!!\r\n\r\n'
+    f'Assumes: \r\n- receiver is connected to port {PORT}\r\n- Configured for {BAUDRATE} baud\r\n- Powered from  '
     f'chip {GPIO_PIN[0]}, offset {GPIO_PIN[1]}.\r\n\r\n'
     f'Loop time set to {LOOP_TIME} seconds, timeout set to {NMEA_TIMEOUT} seconds.\r\n'
-    'Hit CTRL+C to exit...'
+    'Hit CTRL+C to exit...\r\n' +
+    '*'*60
 )
 
 
@@ -39,14 +42,14 @@ def test_gnss():
             )
 
             print(
-                f'Loop {counter}, message: {rtn or "No data received"}',
+                f'Loop {counter}, received: {rtn or "No full RMC and GGA strings received"}',
             )
 
             counter += 1
             sleep(LOOP_TIME)
     except KeyboardInterrupt:
         gpio.off()
-        print('CTRL+C detected, exiting...')
+        print('\b\bCTRL+C detected, exiting...')
 
 
 if __name__ == '__main__':
