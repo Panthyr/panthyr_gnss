@@ -120,8 +120,8 @@ def get_nmea(port: str = GPS_PORT, timeout=45):
                 )  # Read from the buffer, one character at a time
             except UnicodeDecodeError:
                 log.debug(
-                    f'UnicodeDecodeError: Could not decode incoming byte [{read}], current string: {uart_buffer_str}',
-                )
+                    f'UnicodeDecodeError: Could not decode incoming byte [{read}], '
+                    f'current string: {uart_buffer_str}', )
                 uart_buffer_str = ''
             if uart_buffer_str.endswith(
                     '\r\n', ):  # If a newline is found
