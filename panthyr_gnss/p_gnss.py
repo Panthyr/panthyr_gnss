@@ -123,8 +123,7 @@ def get_nmea(port: str = GPS_PORT, timeout=45):
                     f'UnicodeDecodeError: Could not decode incoming byte [{read}]',
                 )
             if uart_buffer_str.endswith(
-                    '\r\n',
-            ):  # If a newline is found
+                    '\r\n', ):  # If a newline is found
                 full_string = uart_buffer_str.strip(
                 )  # Put message without newline chars in variable
                 uart_buffer_str = ''  # Clear the buffer to receive a new line
@@ -287,13 +286,11 @@ def __parse_qual_mag_var(rmc_list, gga_list):
     """
     global parsed
 
-    if rmc_list[
-            10
-    ] == 0:  # there's no mag variation, so set to 0
-        parsed['mag_var'] = 0
+    if rmc_list[11] == '':
+        parsed['mag_var'] = None
     elif rmc_list[11] == 'E':
         parsed['mag_var'] = float(rmc_list[10])
-    else:
+    elif rmc_list[11] == 'S':
         parsed['mag_var'] = -float(rmc_list[10])
 
     parsed['qual'] = int(gga_list[6])
