@@ -4,7 +4,7 @@
 
 Ver 2.0 19mar2018
 
-Project: Hypermaq
+Project: Panthyr
 Dieter Vansteenwegen, VLIZ Belgium
 Copyright?
 
@@ -112,42 +112,31 @@ def get_nmea(port: str = GPS_PORT, timeout=45):
     serport.flushInput()  # clear the input buffer
 
     while timeout:
-        while serport.inWaiting(
-        ) > 0:  # Loop as long as there are chars in serial port buffer
+        while serport.inWaiting() > 0:  # Loop as long as there are chars in serial port buffer
             read = serport.read(1)
             try:
-                uart_buffer_str += read.decode(
-                )  # Read from the buffer, one character at a time
+                uart_buffer_str += read.decode()  # Read from the buffer, one character at a time
             except UnicodeDecodeError:
                 log.debug(
                     f'UnicodeDecodeError: Could not decode incoming byte [{read}], '
                     f'current string: {uart_buffer_str}', )
                 uart_buffer_str = ''
-            if uart_buffer_str.endswith(
-                    '\r\n', ):  # If a newline is found
+            if uart_buffer_str.endswith('\r\n'):  # If a newline is found
                 full_string = uart_buffer_str.strip(
                 )  # Put message without newline chars in variable
                 uart_buffer_str = ''  # Clear the buffer to receive a new line
 
                 if full_string.startswith(
-                        '$G',
-                ) and full_string[
-                        3:7
-                ] == 'GGA,' and __check_checksum(
-                            full_string,
-                ) and __check_gps_quality(
-                            full_string, ) > 0:
+                        '$G', ) and full_string[3:7] == 'GGA,' and __check_checksum(
+                            full_string, ) and __check_gps_quality(full_string) > 0:
                     valid_gga = full_string[:-3].split(
                         ',',
                     )  # store the string as a valid gga message
 
                 if full_string.startswith(
                         '$G',
-                ) and full_string[
-                        3:
-                        7
-                ] == 'RMC,' and valid_gga != '' and __check_checksum(
-                            full_string, ):
+                ) and full_string[3:7] == 'RMC,' and valid_gga != '' and __check_checksum(
+                        full_string, ):
                     valid_rmc = full_string[:-3].split(
                         ',',
                     )  # store the string as a valid rmc message
@@ -180,17 +169,14 @@ def __check_checksum(source):
     Last two characters of a NMEA string are a CRC check. XOR each character
     (binary ASCII representation) between $ and *. Convert to base 16 to get the CRC.
     """
-    str_stripped_message = source[
-        1:
-        -3
-    ]  # only part between $ and before *CRC are used
+    str_stripped_message = source[1:-3]  # only part between $ and before *CRC are used
     crc = 0
     for character in str_stripped_message:
-        crc = crc ^ ord(
-            character,
-        )  # xor each character with the previous CRC solution
-    if str(hex(crc)[2:]) == source[-2:].lower(
-    ):  # check if our crc corresponds with the received one
+        crc = crc ^ ord(character)  # xor each character with the previous CRC solution
+    if str(
+        hex(crc)
+        [2:],
+    ) == source[-2:].lower():  # check if our crc corresponds with the received one
         return (True)
     else:
         return (False)
@@ -228,17 +214,12 @@ def __parse_datetime(gga_list, rmc_list):
         return False
 
     try:  # gga message contains time in format HHMMSS.ms
-        index = gga_list[1].index(
-            '.', )  # check the index of '.'
-        timestring = (
-            gga_list[1]
-        )[:index]  # and use that to keep only HHMMSS
+        index = gga_list[1].index('.')  # check the index of '.'
+        timestring = (gga_list[1])[:index]  # and use that to keep only HHMMSS
     except ValueError:  # index method raises ValueError if no index found
         timestring = gga_list[1]
 
-    datetimestring = timestring + rmc_list[
-        9
-    ]  # add the date to the time
+    datetimestring = timestring + rmc_list[9]  # add the date to the time
     parsed['utc'] = datetime.datetime.strptime(
         datetimestring,
         '%H%M%S%d%m%y',
@@ -264,17 +245,13 @@ def __parse_coordinates_height(gga_list, rmc_list):
         (lat_degrees_minutes % 100) / 60
     )  # convert from degrees minutes.m to decimal degrees
 
-    parsed['lat'] = lat_degrees if gga_list[
-        3
-    ] == 'N' else -lat_degrees
+    parsed['lat'] = lat_degrees if gga_list[3] == 'N' else -lat_degrees
     lon_degrees_minutes = float(gga_list[4])
     lon_degrees = (lon_degrees_minutes // 100) + (
         (lon_degrees_minutes % 100) / 60
     )  # convert from degrees minutes.m to decimal degrees
 
-    parsed['lon'] = lon_degrees if gga_list[
-        5
-    ] == 'E' else -lon_degrees
+    parsed['lon'] = lon_degrees if gga_list[5] == 'E' else -lon_degrees
     parsed['height'] = float(gga_list[9])
 
     return True
