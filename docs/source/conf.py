@@ -21,7 +21,7 @@ copyright = '2021'
 author = 'Dieter Vansteenwegen'
 
 # The full version, including alpha/beta/rc tags
-release = '0.1b'
+release = 'v1.0.0'
 
 # -- General configuration ---------------------------------------------------
 

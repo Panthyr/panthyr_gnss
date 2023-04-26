@@ -174,8 +174,7 @@ def __check_checksum(source):
     for character in str_stripped_message:
         crc = crc ^ ord(character)  # xor each character with the previous CRC solution
     if str(
-        hex(crc)
-        [2:],
+        hex(crc)[2:],
     ) == source[-2:].lower():  # check if our crc corresponds with the received one
         return (True)
     else:

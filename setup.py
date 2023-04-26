@@ -4,10 +4,9 @@ from setuptools import setup
 
 setup(
     name='p_gnss',
-    version='0.1.0-beta',
+    version='v1.0.0',
     packages=find_packages(exclude='old'),
     entry_points={
-        'console_scripts':
-        ['test_gnss = panthyr_gnss.test_gnss:test_gnss'],
+        'console_scripts': ['test_gnss = panthyr_gnss.test_gnss:test_gnss'],
     },
 )
